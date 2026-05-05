@@ -1,6 +1,6 @@
 Project: Patient Triage & Emergency Admission System
 Team: 4 members (2 Frontend, 2 Backend)
-Stack: React, TypeScript, TailwindCSS, Axios
+Stack: React, JavaScript, TailwindCSS, Axios
 Goal: Enable hospital staff to rapidly admit emergency patients, securely record initial vitals, and automatically prioritize them in a triage queue based on severity.
 
 ## Phase Guidelines
@@ -15,7 +15,7 @@ To ensure high velocity and clear progress, follow these strict rules for each d
 ### PHASE 1: Project Setup & Core Dependencies
 Goal: Initialize the React project, set up version control, and install essential dependencies.
 Tasks:
-  - Create React project with Vite, TypeScript, and TailwindCSS.
+  - Create React project with Vite (JavaScript template) and TailwindCSS.
   - Initialize Git repository and link to GitHub.
   - Install Axios for API calls.
   - Set up basic folder structure for components, pages, and services.
@@ -57,7 +57,7 @@ Exit Criteria: Triage dashboard is rendered, displaying hardcoded patient data s
 ### PHASE 6: API Service Integration (Authentication)
 Goal: Integrate the frontend with the backend authentication API.
 Tasks:
-  - Create an `AuthService` (e.g., `src/services/auth.ts`) to handle login and registration API calls using Axios.
+  - Create an `AuthService` (e.g., `src/services/auth.js`) to handle login and registration API calls using Axios.
   - Implement secure token storage (e.g., `localStorage` or `sessionStorage`) for JWT.
   - Update `LoginForm` and `RegistrationForm` to send data to the backend and handle successful/failed responses.
   - Implement a logout function.
@@ -75,7 +75,7 @@ Exit Criteria: Application routes are protected, and user authentication state i
 ### PHASE 8: Patient Admission API Integration
 Goal: Connect the Patient Admission Form to the backend API.
 Tasks:
-  - Create a `PatientService` (e.g., `src/services/patient.ts`) to handle patient admission API calls.
+  - Create a `PatientService` (e.g., `src/services/patient.js`) to handle patient admission API calls.
   - Update the `PatientAdmissionForm` to send data to the backend via `PatientService` upon submission.
   - Handle successful admission responses (e.g., clear form, show success message) and API errors (e.g., display error message).
 Exit Criteria: Patient admission form successfully submits data to the backend, and responses are handled appropriately.
@@ -121,10 +121,10 @@ A full-stack application for hospital staff to manage emergency patient admissio
 PHASE 12 — Deployment Preparation & Final Review
 
 ## Stack
-React, TypeScript, TailwindCSS, Axios
+React, JavaScript, TailwindCSS, Axios
 
 ## Rules
-- Don\'t introduce new UI frameworks or libraries without explicit approval.
+- Don\"t introduce new UI frameworks or libraries without explicit approval.
 - Prefix commits with PHASE-N:
 - Exit criteria before proceeding: Frontend application is ready for deployment, all features are functional, responsive, and code quality is high.
 
@@ -145,15 +145,15 @@ frontend/
   │   │   ├── Dashboard/
   │   │   └── PatientAdmission/
   │   ├── services/
-  │   │   ├── auth.ts
-  │   │   └── patient.ts
+  │   │   ├── auth.js
+  │   │   └── patient.js
   │   ├── context/
-  │   │   └── AuthContext.tsx
-  │   ├── App.tsx
+  │   │   └── AuthContext.jsx
+  │   ├── App.jsx
   │   ├── index.css
-  │   └── main.tsx
+  │   └── main.jsx
   ├── tailwind.config.js
-  ├── tsconfig.json
+  ├── jsconfig.json
   ├── package.json
   └── .env
 ```
