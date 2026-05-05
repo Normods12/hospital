@@ -1,0 +1,215 @@
+Project: Patient Triage & Emergency Admission System
+Team: 4 members (2 Frontend, 2 Backend)
+Stack: Java Spring Boot, PostgreSQL, Spring Data JPA, Spring Security
+Goal: Enable hospital staff to rapidly admit emergency patients, securely record initial vitals, and automatically prioritize them in a triage queue based on severity.
+
+## Phase Guidelines
+To ensure high velocity and clear progress, follow these strict rules for each document:
+- **Phase Count**: This document contains 12 phases.
+- **Time Constraint**: Each phase is designed to be completable in 15-25 minutes maximum.
+- **Atomic Work**: Each phase represents one focused unit of work.
+- **Git Strategy**: Each phase corresponds to exactly one Git commit.
+
+## Backend Implementation Plan
+
+### PHASE 1: Project Setup & Core Dependencies
+Goal: Initialize the Spring Boot project, set up version control, and install essential dependencies.
+Tasks:
+  - Create a new Spring Boot project using Spring Initializr (Maven/Gradle, Java 17+, Spring Web, Spring Data JPA, PostgreSQL Driver, Spring Security).
+  - Initialize Git repository and link to GitHub.
+  - Configure `application.properties` for basic server port and database connection.
+  - Create a simple `HelloController` to verify the application starts.
+Exit Criteria: Spring Boot application starts successfully, accessible via a basic endpoint, and version control is set up.
+
+### PHASE 2: Database Schema Design (Patient & Vitals)
+Goal: Define the database schema for Patient and Vitals entities, including severity score fields.
+Tasks:
+  - Define `Patient` entity with fields: `id` (UUID), `name` (String), `age` (Integer), `gender` (String), `admissionTime` (LocalDateTime), `severityScore` (Integer).
+  - Define `Vitals` entity with fields: `id` (UUID), `patientId` (UUID, FK to Patient), `heartRate` (Integer), `bloodPressureSystolic` (Integer), `bloodPressureDiastolic` (Integer), `temperature` (Double), `recordedAt` (LocalDateTime).
+  - Establish one-to-many relationship between `Patient` and `Vitals`.
+Exit Criteria: JPA entity classes for `Patient` and `Vitals` are defined with correct annotations and relationships.
+
+### PHASE 3: Patient Module
+Entity: Patient
+  - id: UUID
+  - name: String
+  - age: Integer
+  - gender: String
+  - admissionTime: LocalDateTime
+  - severityScore: Integer
+RequestDTO: PatientCreateRequestDTO
+  - name, age, gender
+ResponseDTO: PatientResponseDTO
+  - id: UUID
+  - name: String
+  - age: Integer
+  - gender: String
+  - admissionTime: LocalDateTime
+  - severityScore: Integer
+Endpoints:
+  POST  /api/patients       → Register a new patient
+  GET   /api/patients/{id}  → Retrieve patient details
+Exit Criteria: All endpoints return correct response via Postman
+
+### PHASE 4: Vitals Module
+Entity: Vitals
+  - id: UUID
+  - patientId: UUID (FK to Patient)
+  - heartRate: Integer
+  - bloodPressureSystolic: Integer
+  - bloodPressureDiastolic: Integer
+  - temperature: Double
+  - recordedAt: LocalDateTime
+RequestDTO: VitalsCreateRequestDTO
+  - patientId, heartRate, bloodPressureSystolic, bloodPressureDiastolic, temperature
+ResponseDTO: VitalsResponseDTO
+  - id: UUID
+  - patientId: UUID
+  - heartRate: Integer
+  - bloodPressureSystolic: Integer
+  - bloodPressureDiastolic: Integer
+  - temperature: Double
+  - recordedAt: LocalDateTime
+Endpoints:
+  POST  /api/vitals         → Record new vitals for a patient
+  GET   /api/vitals/patient/{patientId} → Retrieve all vitals for a patient
+Exit Criteria: All endpoints return correct response via Postman
+
+### PHASE 5: Severity Score Calculation Service
+Goal: Develop the core logic for calculating the patient severity score.
+Tasks:
+  - Create a `SeverityCalculationService`.
+  - Implement a basic algorithm to calculate `severityScore` based on `heartRate`, `bloodPressure`, and `temperature` (e.g., defined ranges for Critical, Urgent, Stable).
+  - Ensure the service can be called with `Vitals` data and returns an integer score.
+Exit Criteria: `SeverityCalculationService` is implemented and unit tested with various vital inputs to produce correct scores.
+
+### PHASE 6: Patient Admission Service
+Goal: Implement the service logic for admitting new patients, including saving vitals and calculating severity.
+Tasks:
+  - Create an `AdmissionService`.
+  - Implement a method `admitPatient` that takes `PatientCreateRequestDTO` and `VitalsCreateRequestDTO`.
+  - This method should save the patient, save the initial vitals, and call the `SeverityCalculationService` to update the patient's `severityScore`.
+Exit Criteria: `AdmissionService` is implemented and can successfully admit a patient, record vitals, and update severity score.
+
+### PHASE 7: Triage Queue Service (Sorting Logic)
+Goal: Implement the service to retrieve and sort patients based on their severity score.
+Tasks:
+  - Create a `TriageService`.
+  - Implement a method `getTriageQueue` to retrieve all active patients, sorted by `severityScore` (descending) and then by `admissionTime` (ascending).
+Exit Criteria: `TriageService` can fetch and sort patients correctly based on severity.
+
+### PHASE 8: Security Configuration & User Entity
+Goal: Configure Spring Security and define the `User` entity for authentication.
+Tasks:
+  - Add Spring Security dependencies.
+  - Configure `SecurityConfig` to enable JWT authentication and disable CSRF.
+  - Define `User` entity with fields: `id`, `username`, `password`, `roles`.
+  - Implement `UserDetailsService` and `PasswordEncoder`.
+Exit Criteria: Spring Security is configured, `User` entity is defined, and basic user management components are in place.
+
+### PHASE 9: Authentication Module
+Entity: User
+  - id: UUID
+  - username: String
+  - password: String (hashed)
+  - roles: Set<String>
+RequestDTO: LoginRequestDTO
+  - username, password
+ResponseDTO: JwtResponseDTO
+  - token: String
+Endpoints:
+  POST  /api/auth/login     → Authenticate user and return JWT
+  POST  /api/auth/register  → Register a new user (for initial setup)
+Exit Criteria: All endpoints return correct response via Postman
+
+### PHASE 10: Authorization & Role-Based Access Control
+Goal: Implement role-based authorization for API endpoints.
+Tasks:
+  - Define user roles (e.g., `ROLE_STAFF`, `ROLE_ADMIN`).
+  - Use Spring Security annotations (`@PreAuthorize`) to protect service methods and controller endpoints based on user roles.
+  - Apply authorization to relevant services (e.g., only `ROLE_STAFF` can admit patients).
+Exit Criteria: API endpoints are protected by role-based authorization.
+
+### PHASE 11: API Endpoints (Admission & Triage)
+Goal: Create REST API endpoints for patient admission and triage queue retrieval.
+Tasks:
+  - Create `PatientController` with endpoints for patient admission (`POST /api/patients/admit`) and retrieval.
+  - Create `TriageController` with an endpoint for the triage queue (`GET /api/triage`).
+  - Integrate `AdmissionService` and `TriageService` with these controllers.
+  - Apply authentication and authorization to these endpoints.
+Exit Criteria: API endpoints are functional and secure, allowing patient admission and triage queue retrieval.
+
+### PHASE 12: API Validation & Documentation
+Goal: Ensure API endpoints are fully validated and documented.
+Tasks:
+  - Add validation annotations (`@Valid`, `@NotNull`, etc.) to DTOs and ensure they are enforced by Spring Boot.
+  - Integrate OpenAPI/Swagger UI for API documentation.
+  - Generate and review Swagger documentation for accuracy and completeness.
+  - Manually test all endpoints using Postman or curl to confirm functionality and security.
+Exit Criteria: All API endpoints are validated, documented in Swagger UI, and confirmed functional via Postman/curl.
+
+## AGENTS.md Block
+## Context
+A full-stack application for hospital staff to manage emergency patient admissions, record vitals, and view a real-time, severity-sorted triage queue.
+
+## Current Phase
+PHASE 12 — API Validation & Documentation
+
+## Stack
+Java Spring Boot, PostgreSQL, Spring Data JPA, Spring Security
+
+## Rules
+- Don't modify existing database schema without a new migration.
+- Prefix commits with PHASE-N:
+- Exit criteria before proceeding: All API endpoints are validated, documented in Swagger UI, and confirmed functional via Postman/curl.
+
+## File Structure Snapshot
+```
+backend/
+  ├── src/
+  │   ├── main/
+  │   │   ├── java/
+  │   │   │   └── com/
+  │   │   │       └── example/
+  │   │   │           └── triagesystem/
+  │   │   │               ├── TriageSystemApplication.java
+  │   │   │               ├── config/
+  │   │   │               │   └── SecurityConfig.java
+  │   │   │               ├── controller/
+  │   │   │               │   ├── AuthController.java
+  │   │   │               │   ├── PatientController.java
+  │   │   │               │   └── TriageController.java
+  │   │   │               ├── model/
+  │   │   │               │   ├── Patient.java
+  │   │   │               │   ├── User.java
+  │   │   │               │   └── Vitals.java
+  │   │   │               ├── repository/
+  │   │   │               │   ├── PatientRepository.java
+  │   │   │               │   ├── UserRepository.java
+  │   │   │               │   └── VitalsRepository.java
+  │   │   │               ├── service/
+  │   │   │               │   ├── AdmissionService.java
+  │   │   │               │   ├── SeverityCalculationService.java
+  │   │   │               │   ├── TriageService.java
+  │   │   │               │   └── UserDetailsServiceImpl.java
+  │   │   │               └── dto/
+  │   │   │                   ├── PatientCreateRequestDTO.java
+  │   │   │                   ├── PatientResponseDTO.java
+  │   │   │                   ├── VitalsCreateRequestDTO.java
+  │   │   │                   ├── VitalsResponseDTO.java
+  │   │   │                   ├── LoginRequestDTO.java
+  │   │   │                   └── JwtResponseDTO.java
+  │   │   └── resources/
+  │   │       ├── application.properties
+  │   │       └── data.sql (for initial data, if any)
+  │   └── test/
+  │       └── java/...
+  ├── pom.xml (or build.gradle)
+  └── .gitignore
+```
+
+## Deployment Checklist (Final Phase)
+- Environment variables list (DATABASE_URL, JWT_SECRET, etc.)
+- CI/CD pipeline steps (build, test, deploy to staging/production).
+- Dockerfile and Docker Compose configuration for backend service and PostgreSQL.
+- Nginx reverse proxy rules for API gateway (if applicable).
