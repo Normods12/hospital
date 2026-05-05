@@ -1,6 +1,6 @@
 import React from 'react';
 
-const AdmitPatient: React.FC = () => {
+const AdmitPatient = () => {
   return (
     <div>
       <div className="mb-8">

@@ -2,9 +2,9 @@ import React from 'react';
 import { Activity, ShieldCheck, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-const Home: React.FC = () => {
+const Home = () => {
   return (
-    <div className="flex flex-col items-center text-center py-12">
+    <div className="flex flex-col items-center text-center py-12 px-6">
       <div className="bg-blue-100 p-4 rounded-3xl mb-6">
         <Activity className="w-12 h-12 text-blue-600" />
       </div>

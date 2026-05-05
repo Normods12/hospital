@@ -3,18 +3,21 @@ import Layout from './components/Layout';
 import Home from './pages/Home';
 import Dashboard from './pages/Dashboard';
 import AdmitPatient from './pages/AdmitPatient';
+import LoginPage from './pages/LoginPage';
+import SignupPage from './pages/SignupPage';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public Landing Page (No Layout) */}
+        {/* Public Landing Page */}
         <Route path="/" element={<Home />} />
         
-        {/* Placeholder for Login (Phase 3) */}
-        <Route path="/login" element={<div className="flex items-center justify-center min-h-screen">Login UI Coming in Phase 3</div>} />
+        {/* Auth Pages */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignupPage />} />
 
-        {/* Protected/App Routes (With Layout) */}
+        {/* Protected App Routes */}
         <Route path="/dashboard" element={<Layout><Dashboard /></Layout>} />
         <Route path="/admit-patient" element={<Layout><AdmitPatient /></Layout>} />
         

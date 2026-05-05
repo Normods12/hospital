@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Dashboard: React.FC = () => {
+const Dashboard = () => {
   return (
     <div>
       <div className="flex items-center justify-between mb-8">

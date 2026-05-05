@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { LayoutDashboard, UserPlus, Settings, History } from 'lucide-react';
 
-const Sidebar: React.FC = () => {
+const Sidebar = () => {
   const navItems = [
     { name: 'Triage Dashboard', path: '/dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
     { name: 'Admit Patient', path: '/admit-patient', icon: <UserPlus className="w-5 h-5" /> },

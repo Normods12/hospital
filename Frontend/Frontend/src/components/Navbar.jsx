@@ -1,7 +1,7 @@
 import React from 'react';
-import { Activity } from 'lucide-react'; // I'll install lucide-react in a moment
+import { Activity } from 'lucide-react';
 
-const Navbar: React.FC = () => {
+const Navbar = () => {
   return (
     <nav className="bg-white border-b border-slate-200 h-16 flex items-center px-6 sticky top-0 z-50">
       <div className="flex items-center gap-2">
